@@ -1,9 +1,9 @@
 
+import Foundation
+
 let base = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 let smallestInteger = "A00000000000000000000000000"
 let firstInteger = "a0"
-
-import Foundation
 
 fileprivate extension String {
     subscript(_ range: CountableRange<Int>) -> String {
@@ -13,11 +13,6 @@ fileprivate extension String {
         return String(self[start..<end])
     }
 
-    subscript(_ range: CountablePartialRangeFrom<Int>) -> String {
-        let start = index(startIndex, offsetBy: max(0, range.lowerBound))
-         return String(self[start...])
-    }
-    
     subscript(safe idx: Int) -> String? {
         if count > idx {
             let i = index(startIndex, offsetBy: idx)
@@ -39,12 +34,6 @@ fileprivate extension String {
             return ""
         }
         return String(suffix(from: index(startIndex, offsetBy: offsetBy)))
-    }
-}
-
-fileprivate extension Collection {
-    subscript(optional i: Index) -> Iterator.Element? {
-        return self.indices.contains(i) ? self[i] : nil
     }
 }
 
@@ -215,7 +204,7 @@ func validateOrderKey(key: String) throws {
     }
 }
 
-func generateKeyBetween(a: String?, b: String?) throws -> String {
+public func generateKeyBetween(a: String?, b: String?) throws -> String {
     if let a = a {
         try validateOrderKey(key: a)
     }
