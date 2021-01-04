@@ -1,9 +1,11 @@
 
 import Foundation
 
-let base = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
-let smallestInteger = "A00000000000000000000000000"
-let firstInteger = "a0"
+public enum Constants {
+    static let base = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+    static let smallestInteger = "A00000000000000000000000000"
+    static let firstInteger = "a0"
+}
 
 fileprivate extension String {
     subscript(_ range: CountableRange<Int>) -> String {
@@ -52,7 +54,6 @@ enum FractionalIndexError: Error {
   returns an order key such that a < return < c
  */
 func getMidpoint(a: String, b: String?) throws -> String {
-    print("a: \(a), b: \(b ?? "nil")")
     if let b = b, a >= b {
         throw FractionalIndexError.wrongOrder("\(a) >= \(b)")
     }
@@ -69,17 +70,17 @@ func getMidpoint(a: String, b: String?) throws -> String {
             return "\(commonPrefix)\(try getMidpoint(a: a.getSuffix(n), b: b.getSuffix(n)))"
         }
     }
-    let digitA = a.first != nil ? base.distance(from: base.startIndex, to: base.firstIndex(of: a.first!) ?? base.endIndex) : 0
-    let digitB = b?.first != nil ? base.distance(from: base.startIndex, to: base.firstIndex(of: b!.first!) ?? base.endIndex) : base.count
+    let digitA = a.first != nil ? Constants.base.distance(from: Constants.base.startIndex, to: Constants.base.firstIndex(of: a.first!) ?? Constants.base.endIndex) : 0
+    let digitB = b?.first != nil ? Constants.base.distance(from: Constants.base.startIndex, to: Constants.base.firstIndex(of: b!.first!) ?? Constants.base.endIndex) : Constants.base.count
     
     if digitB - digitA > 1 {
         let midDigit = Int(round(0.5 * Double(digitA + digitB)))
-        return String(base[base.index(base.startIndex, offsetBy: midDigit)])
+        return String(Constants.base[Constants.base.index(Constants.base.startIndex, offsetBy: midDigit)])
     } else {
         if b?.count ?? 0 > 1 {
             return String((b?.first!)!)
         } else {
-            let head = String(base[base.index(base.startIndex, offsetBy: digitA)])
+            let head = String(Constants.base[Constants.base.index(Constants.base.startIndex, offsetBy: digitA)])
             let aTail = a.count > 0 ? String(a.suffix(from: a.index(after: a.startIndex))) : ""
             let tail = try getMidpoint(a: aTail, b: nil)
             return "\(head)\(tail)"
@@ -113,14 +114,14 @@ func incrementInteger(x: String) throws -> String? {
     var carry = true
     var i = digs.count - 1
     while i >= 0 && carry {
-        let d = base.distance(
-            from: base.startIndex,
-            to: base.firstIndex(of: digs[i])!
+        let d = Constants.base.distance(
+            from: Constants.base.startIndex,
+            to: Constants.base.firstIndex(of: digs[i])!
         ) + 1
-        if d == base.count {
+        if d == Constants.base.count {
             digs[i] = "0"
         } else {
-            digs[i] = base[base.index(base.startIndex, offsetBy: d)]
+            digs[i] = Constants.base[Constants.base.index(Constants.base.startIndex, offsetBy: d)]
             carry = false
         }
         i -= 1
@@ -151,28 +152,28 @@ func decrementInteger(x: String) throws -> String? {
     var borrow = true
     var i = digs.count - 1
     while i >= 0 && borrow {
-        let d = base.distance(
-            from: base.startIndex,
-            to: base.firstIndex(of: digs[i])!
+        let d = Constants.base.distance(
+            from: Constants.base.startIndex,
+            to: Constants.base.firstIndex(of: digs[i])!
         ) - 1
         if d == -1 {
-            digs[i] = base.last!
+            digs[i] = Constants.base.last!
         } else {
-            digs[i] = base[base.index(base.startIndex, offsetBy: d)]
+            digs[i] = Constants.base[Constants.base.index(Constants.base.startIndex, offsetBy: d)]
             borrow = false
         }
         i -= 1
     }
     if borrow {
         if head == "a" {
-            return "Z" + String(base.last!)
+            return "Z" + String(Constants.base.last!)
         }
         if head == "A" {
             return nil
         }
         let h = String(UnicodeScalar(String(head).unicodeAt(index: 0) - 1)!)
         if h < "Z" {
-            digs.append(base.last!)
+            digs.append(Constants.base.last!)
         } else {
             _ = digs.popLast()
         }
@@ -194,7 +195,7 @@ func getIntegerPart(key: String) throws -> String {
 }
 
 func validateOrderKey(key: String) throws {
-    if key == smallestInteger {
+    if key == Constants.smallestInteger {
         throw FractionalIndexError.invalidOrderKey(key)
     }
     let integer = try getIntegerPart(key: key)
@@ -232,7 +233,7 @@ public func generateKeyBetween(a: String?, b: String?) throws -> String {
     } else if let b = b {
         let ib = try getIntegerPart(key: b)
         let fb = b.getSuffix(ib.count)
-        if ib == firstInteger {
+        if ib == Constants.smallestInteger {
             let midpoint = try getMidpoint(a: "", b: fb)
             return ib + midpoint
         }
@@ -251,6 +252,6 @@ public func generateKeyBetween(a: String?, b: String?) throws -> String {
             return ia + midpoint
         }
     } else {
-        return firstInteger
+        return Constants.firstInteger
     }
 }

@@ -31,6 +31,7 @@ final class FractionalIndexTests: XCTestCase {
         XCTAssertEqual(try! generateKeyBetween(a: nil, b: nil), "a0")
         XCTAssertEqual(try! generateKeyBetween(a: "Zz", b: "a0"), "ZzV")
         XCTAssertEqual(try! generateKeyBetween(a: "Zz", b: "a01"), "a0")
+        XCTAssertEqual(try! generateKeyBetween(a: nil, b: "a0"), "Zz")
     }
 
     static var allTests = [
