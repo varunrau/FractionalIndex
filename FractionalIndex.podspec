@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name           = "FractionalIndex"
-  spec.version        = "0.0.1"
+  spec.version        = "0.0.2"
   spec.summary        = "A small utility for fractional indexing"
   spec.license        = 'MIT'
   spec.description    = <<-DESC
